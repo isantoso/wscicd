@@ -1,0 +1,456 @@
+/* ==========================================================================
+   HALVORSEN ATLANTIC — layout.css
+   Shell, masthead, section composition, footer, breakpoints.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- shell -- */
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+/* Hairline between sections, inset to the shell's measure. */
+.section + .section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100% - var(--pad) * 2, var(--shell) - var(--pad) * 2);
+  height: 1px;
+  background: var(--rule-soft);
+}
+
+.section__head {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 54rem;
+  margin-bottom: clamp(3rem, 2rem + 3vw, 5.5rem);
+}
+
+.section__head-note {
+  max-width: 42ch;
+  color: var(--ink-muted);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+}
+
+/* -------------------------------------------------------------- masthead -- */
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s var(--ease), border-color 0.4s var(--ease),
+              backdrop-filter 0.4s var(--ease);
+}
+
+.masthead.is-stuck {
+  background: color-mix(in oklab, var(--bone) 88%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--rule);
+}
+
+.masthead__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  min-height: 5rem;
+}
+
+.masthead.is-stuck .masthead__inner { min-height: 4.25rem; }
+
+/* ----------------------------------------------------------------- hero -- */
+.hero {
+  position: relative;
+  padding-block: clamp(3.5rem, 2rem + 7vw, 8rem) clamp(3rem, 2rem + 4vw, 6rem);
+  overflow: hidden;
+}
+
+/* Blueprint field: fine grid, warm wash, vignette. */
+.hero__plate {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 78% 8%,
+      color-mix(in oklab, var(--vermilion) 11%, transparent) 0%,
+      transparent 58%),
+    radial-gradient(90% 70% at 4% 96%,
+      color-mix(in oklab, #2f4a3e 14%, transparent) 0%,
+      transparent 60%),
+    repeating-linear-gradient(to right,
+      var(--rule-soft) 0 1px, transparent 1px 5.5rem),
+    repeating-linear-gradient(to bottom,
+      var(--rule-soft) 0 1px, transparent 1px 5.5rem),
+    var(--bone);
+  mask-image: radial-gradient(130% 100% at 50% 20%, #000 42%, transparent 100%);
+}
+
+.hero__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+  grid-template-areas:
+    "eyebrow eyebrow"
+    "title   title"
+    "body    ledger"
+    "cue     ledger";
+  column-gap: clamp(2rem, 1rem + 4vw, 6rem);
+  row-gap: clamp(1.75rem, 1rem + 2.4vw, 3.25rem);
+  align-items: start;
+}
+
+.hero .eyebrow { grid-area: eyebrow; }
+
+.hero__title {
+  grid-area: title;
+  font-family: var(--display);
+  font-size: var(--fs-h1);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+.hero__title span { display: block; }
+
+.hero__title em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--vermilion);
+}
+
+.hero__body { grid-area: body; max-width: 40ch; }
+
+.hero__body p {
+  font-size: var(--fs-lede);
+  line-height: 1.44;
+  letter-spacing: -0.012em;
+  color: var(--ink-soft);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.ledger { grid-area: ledger; }
+.scrollcue { grid-area: cue; }
+
+/* Rotated marginalia down the left edge — desktop only. */
+.rail {
+  position: absolute;
+  left: calc(var(--pad) * 0.34);
+  top: 48%;
+  transform: rotate(180deg) translateY(50%);
+  writing-mode: vertical-rl;
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--stone);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- about -- */
+.about__inner {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr) minmax(0, 23rem);
+  column-gap: clamp(2rem, 1rem + 4vw, 5rem);
+  row-gap: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+  grid-template-areas:
+    "label lede  pull"
+    ".     text  pull"
+    ".     marks marks";
+}
+
+.about__label { grid-area: label; padding-top: 0.6rem; }
+.about__label .eyebrow { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+.about__lede { grid-area: lede; }
+.about__text { grid-area: text; display: grid; gap: 1.1rem; max-width: 58ch; }
+.about__text p { color: var(--ink-soft); }
+.pull  { grid-area: pull; }
+.marks { grid-area: marks; }
+
+/* -------------------------------------------------------------- figures -- */
+.figures {
+  position: relative;
+  padding-block: clamp(3.5rem, 2.4rem + 4vw, 7rem);
+  background: var(--ink);
+  color: var(--bone);
+  overflow: hidden;
+}
+
+.figures::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(80% 120% at 88% 0%,
+      color-mix(in oklab, var(--vermilion) 26%, transparent), transparent 62%),
+    repeating-linear-gradient(to right,
+      var(--rule-invert) 0 1px, transparent 1px 7rem);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.figures .shell { position: relative; }
+
+.figures__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+  margin-top: clamp(2rem, 1.4rem + 2vw, 3.5rem);
+}
+
+/* ----------------------------------------------------------------- work -- */
+.work__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+  align-items: start;
+}
+
+/* The lead project claims two columns and sits slightly high. */
+.card--tall {
+  grid-column: span 2;
+  margin-top: -2.5rem;
+}
+
+.work__more {
+  margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule-soft);
+}
+
+/* --------------------------------------------------------------- people -- */
+.people__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+/* ------------------------------------------------------------- insights -- */
+.notes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+
+/* -------------------------------------------------------------- contact -- */
+.contact {
+  background: var(--ink);
+  color: var(--bone);
+}
+
+/* Dark section — the inter-section hairline would read as a scar here. */
+.contact.section::before { display: none; }
+
+.contact__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(2.5rem, 1.6rem + 4vw, 6rem);
+}
+
+.contact .h-display { margin-top: 1.25rem; }
+.contact .h-display em { color: color-mix(in oklab, var(--vermilion) 72%, var(--bone)); }
+
+.contact__note {
+  max-width: 40ch;
+  margin-top: 1.5rem;
+  color: color-mix(in oklab, var(--bone) 64%, transparent);
+}
+
+.offices {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule-invert);
+}
+
+.offices li {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+  font-size: var(--fs-small);
+  color: color-mix(in oklab, var(--bone) 60%, transparent);
+}
+
+.offices strong {
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bone);
+  padding-top: 0.1rem;
+}
+
+.offices a {
+  font-family: var(--mono);
+  font-size: var(--fs-small);
+  color: color-mix(in oklab, var(--bone) 78%, transparent);
+  border-bottom: 1px solid var(--rule-invert);
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.offices a:hover { color: var(--bone); border-color: currentColor; }
+
+/* --------------------------------------------------------------- footer -- */
+.footer {
+  position: relative;
+  padding-top: clamp(3.5rem, 2.4rem + 4vw, 6rem);
+  background: var(--ink);
+  color: var(--bone);
+  overflow: hidden;
+  border-top: 1px solid var(--rule-invert);
+}
+
+.footer__top {
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  gap: clamp(2.5rem, 1.6rem + 4vw, 6rem);
+  padding-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+}
+
+.footer__mark {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.footer__blurb {
+  margin-top: 1rem;
+  max-width: 34ch;
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  color: color-mix(in oklab, var(--bone) 52%, transparent);
+}
+
+.footer__nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.footer__nav h2 {
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--stone);
+  margin-bottom: 1.1rem;
+}
+
+.footer__nav ul { display: grid; gap: 0.65rem; }
+
+.footer__nav a {
+  font-size: var(--fs-small);
+  color: color-mix(in oklab, var(--bone) 80%, transparent);
+  transition: color 0.2s var(--ease), padding-left 0.25s var(--ease);
+}
+.footer__nav a:hover { color: var(--vermilion); padding-left: 0.3rem; }
+
+.footer__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--rule-invert);
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--stone);
+}
+
+.footer__bar ul { display: flex; gap: 1.5rem; }
+.footer__bar a:hover { color: var(--bone); }
+
+/* Oversized wordmark bleeding off the bottom edge. */
+.footer__giant {
+  margin-top: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+  margin-bottom: -0.22em;
+  font-family: var(--display);
+  font-size: clamp(4rem, 15.4vw, 15rem);
+  font-weight: 500;
+  line-height: 0.78;
+  letter-spacing: -0.045em;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--bone) 26%, transparent);
+  user-select: none;
+}
+
+/* ============================================================ responsive = */
+@media (max-width: 68.75rem) {           /* 1100px */
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "eyebrow"
+      "title"
+      "body"
+      "ledger"
+      "cue";
+  }
+  .rail { display: none; }
+
+  .about__inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+    grid-template-areas:
+      "label label"
+      "lede  pull"
+      "text  pull"
+      "marks marks";
+  }
+  .about__label { padding-top: 0; }
+  .about__label .eyebrow { flex-direction: row; align-items: center; gap: 0.625rem; }
+
+  .work__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card--tall { grid-column: span 2; margin-top: 0; }
+
+  .people__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .notes { grid-template-columns: minmax(0, 1fr); }
+  .figures__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact__inner,
+  .footer__top { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 48rem) {              /* 768px */
+  .about__inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "label" "lede" "text" "pull" "marks";
+  }
+  .work__grid { grid-template-columns: minmax(0, 1fr); }
+  .card--tall { grid-column: auto; }
+  .footer__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .offices li { grid-template-columns: minmax(0, 1fr); gap: 0.35rem; }
+}
+
+@media (max-width: 34rem) {              /* 544px */
+  .figures__grid { grid-template-columns: minmax(0, 1fr); }
+  .people__grid { grid-template-columns: minmax(0, 1fr); }
+  .footer__nav { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .footer__bar { flex-direction: column; align-items: flex-start; }
+}
+
+/* --------------------------------------------------------------- print -- */
+@media print {
+  body::after, .hero__plate, .masthead, .ticker, .footer__giant { display: none; }
+  .figures, .contact, .footer { background: #fff; color: #000; }
+  .reveal, .stagger { opacity: 1; transform: none; }
+}
