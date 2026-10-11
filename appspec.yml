@@ -1,0 +1,26 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/www/website/releases/new
+hooks:
+  BeforeInstall:
+    - location: ci-scripts/before-install.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: ci-scripts/after-install.sh
+      timeout: 300
+      runas: root
+  ValidateService:
+    - location: ci-scripts/validate-service.sh
+      timeout: 60
+      runas: root
+  ApplicationStart:
+    - location: ci-scripts/swap-symlink.sh
+      timeout: 60
+      runas: root
+  ApplicationStop:
+    - location: ci-scripts/cleanup-releases.sh
+      timeout: 60
+      runas: root
